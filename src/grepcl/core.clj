@@ -39,6 +39,7 @@
     ;;     (= (second k) \+)) (cons (cons automat/+
     ;;                                (eval (cons automat/or (flatten (first k)))))
     ;;                        (k->a (rest (rest k))))
+    ;; TODO: implement 'range', 'maybe', and 'not'
     (and (not (vector? (first k))) ;; zed-plus singleton
          (= (second k) \*)) (cons (eval (automat/* (first k)))
                               (k->a (rest (rest k))))
@@ -78,8 +79,7 @@
 (defn -main
   "temporary -main bypasses cli interface"
   [& args]
-  (println "0")
-  )
+  (println "0"))
 
 ;;(defn -main
 ;;  [& args]
