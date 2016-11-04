@@ -58,15 +58,28 @@
 
 (defn build-automat-fsm
   "build automat fsm"
-  [regex]
-  (-> regex 
+  [re]
+  (-> re
       parse-re 
       k->a))
+
+(defn run-re
+  "returns result of running specified text against a regular expression"
+  [re text]
+  (let [t (parse-re text)
+        re-fsm (automat/compile (build-automat-fsm re))]
+    (automat/find re-fsm nil t)))
+
+(defn visualize-re
+  "graphviz rendering of regular expression as a finite state machine"
+  [re]
+  (automat.viz/view (build-automat-fsm re)))
 
 (defn -main
   "temporary -main bypasses cli interface"
   [& args]
-  (automat.viz/view (build-automat-fsm args))) ;; TODO: varify
+  (println "0")
+  )
 
 ;;(defn -main
 ;;  [& args]
