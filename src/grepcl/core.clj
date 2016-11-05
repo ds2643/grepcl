@@ -1,3 +1,5 @@
+;; TODO: tools.cli/cli is might soon be deprecated; replace with tools.cli/parse-opts when possible
+
 (ns grepcl.core
   (:gen-class)
   (:require [clojure.tools.cli :refer [cli]]
@@ -77,12 +79,15 @@
   (automat.viz/view (build-automat-fsm re)))
 
 (defn -main
-  [args]
-  (let [re "hello"
-        text-path "test.txt"
-        [opts args banner] (cli args ["-h" "--help" "Help"
-                                      :default false :flag true])
-        re "hello"]
+  [& args]
+  (let [[opts args banner] (cli args ["-a" "--help" "Help"
+                                      :default false :flag true]
+                                ["-r" "--regex" "Regular Expression"
+                                 :validate [#(and (string? %) (> (count %) 0))
+                                            "Regex must be valid string"]]
+                                ["-p" "--path" "Text path"])
+        re (opts :regex)
+        text-path (opts :path)]
     (with-open [rdr (java-io/reader text-path)]
       (let [text-as-vector (filter #(not (= % \newline)) (kern/char-seq rdr))]
         (do
