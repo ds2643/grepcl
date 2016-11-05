@@ -1,6 +1,7 @@
 (ns grepcl.core
   (:gen-class)
-  (:require [blancas.kern.core :as kern]
+  (:require [clojure.tools.cli :refer [cli]]
+            [blancas.kern.core :as kern]
             [blancas.kern.lexer.java-style :as kern-lexer]
             [clojure.java.io :as java-io]
             [automat.viz :as automat-viz]
@@ -61,15 +62,14 @@
   "build automat fsm"
   [re]
   (-> re
-      parse-re 
+      parse-re
       k->a))
 
 (defn run-re
   "returns result of running specified text against a regular expression"
   [re text]
-  (let [t (parse-re text)
-        re-fsm (automat/compile (build-automat-fsm re))]
-    (automat/find re-fsm nil t)))
+  (let [re-fsm (automat/compile (build-automat-fsm re))]
+    (automat/find re-fsm nil text)))
 
 (defn visualize-re
   "graphviz rendering of regular expression as a finite state machine"
@@ -77,20 +77,14 @@
   (automat.viz/view (build-automat-fsm re)))
 
 (defn -main
-  "temporary -main bypasses cli interface"
-  [& args]
-  (println "0"))
-
-;;(defn -main
-;;  [& args]
-  ;;(def abs-file-path "/home/david/Projects/temp/poop.txt")
-  ;;(with-open [rdr (java-io/reader abs-file-path)]
-  ;;  (let [c (kern/char-seq rdr)]
-  ;;    (println (take 5 c))))
-  ;;(automat-viz/view (k->a (parse-re "a[bc]d"))))
-;;  (k->a (parse-re "[ef]+")))
-
-;;(defn parsed-re->graph-params
-;;  "generates directed weighted graph from parsed re"
-;;  [parsed-re]
-;;  (eval (cons 'loom.graph/weighted-digraph (map (fn [x] (into [] (concat (map (fn [x] (keyword (str x))) (first x)) (second x)))) (zipmap (interleave (map vector (range) (iterate inc 1))) (map (fn [x] (vector x)) parsed-re ))))))
+  [args]
+  (let [re "hello"
+        text-path "test.txt"
+        [opts args banner] (cli args ["-h" "--help" "Help"
+                                      :default false :flag true])
+        re "hello"]
+    (with-open [rdr (java-io/reader text-path)]
+      (let [text-as-vector (filter #(not (= % \newline)) (kern/char-seq rdr))]
+        (do
+          (if (:help opts) (println banner))
+          (println (run-re re text-as-vector)))))))
