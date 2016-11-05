@@ -1,4 +1,5 @@
 ;; TODO: tools.cli/cli is might soon be deprecated; replace with tools.cli/parse-opts when possible
+;; fix cli HELP
 
 (ns grepcl.core
   (:gen-class)
@@ -80,16 +81,20 @@
 
 (defn -main
   [& args]
-  (let [[opts args banner] (cli args ["-a" "--help" "Help"
+  (let [[opts args banner] (cli args
+                                ["-a" "--help" "Help"
                                       :default false :flag true]
                                 ["-r" "--regex" "Regular Expression"
                                  :validate [#(and (string? %) (> (count %) 0))
                                             "Regex must be valid string"]]
-                                ["-p" "--path" "Text path"])
+                                ["-p" "--path" "Text path"]
+                                ["-v" "--visual" "Visual representation of regex as FSM"
+                                 :default false :flag true])
         re (opts :regex)
         text-path (opts :path)]
     (with-open [rdr (java-io/reader text-path)]
       (let [text-as-vector (filter #(not (= % \newline)) (kern/char-seq rdr))]
         (do
           (if (:help opts) (println banner))
-          (println (run-re re text-as-vector)))))))
+          (println (run-re re text-as-vector))
+          (if (:visual opts) (visualize-re re)))))))
