@@ -1,5 +1,6 @@
 ;; TODO: tools.cli/cli is might soon be deprecated; replace with tools.cli/parse-opts when possible
-;; fix cli HELP
+;; TODO: fix cli HELP
+;; TODO: fix visual output
 
 (ns grepcl.core
   (:gen-class)
@@ -79,6 +80,13 @@
   [re]
   (automat.viz/view (build-automat-fsm re)))
 
+(defn pprint-result
+  [re vectorized-text]
+  (let [result (run-re re vectorized-text)]
+    (when (:accepted? result)
+      (println "The specified regular expression was found")
+      (println "Please note that a display of the patten-matching component of the specified text source has not yet been implemented."))))
+
 (defn -main
   [& args]
   (let [[opts args banner] (cli args
@@ -96,5 +104,5 @@
       (let [text-as-vector (filter #(not (= % \newline)) (kern/char-seq rdr))]
         (do
           (if (:help opts) (println banner))
-          (println (run-re re text-as-vector))
+          (pprint-result re text-as-vector)
           (if (:visual opts) (visualize-re re)))))))
