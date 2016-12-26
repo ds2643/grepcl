@@ -5,19 +5,23 @@
             [grepcl.core :refer :all]))
 
 (deftest parse-re-test
-  (testing "testing parse-re (example based tests)"
+  (testing "example based testing for pare-re attemps to parse simple examples that attempt to maximize branch coverage"
     (are [expected re]
          (= expected (parse-re re))
          [] ""
-         [\h \e \l \l \o \space \1 \2 \3] "hello 123"
-         [[\1]] "[1]"
-         nil "[i*nVa1*d?]"
-         [[\a] \1 \+ \b \*] "[a]1+b*")))
+         [\space] " "
+         [\l \i \s \p] "lisp"
+         [\l \i \s \p \space \l \i \v \e \s] "lisp lives"
+         [[]] "[]"
+         [[\1 \2 \3]] "[1 2 3]"
+         [[\a] \1 \+ \b \* \F \.] "[a]1+b*F."
+         nil "[i*nVa1*d?]")))
 
 (deftest k->a-test
-  (testing "testing k->a (example based)"
+  (testing ")testing k->a (example based)"
     (are [expected parsed-re]
          (= expected (k->a parsed-re))
+         # TODO: more extensive examples
          [] []
          '(\a \b \c) [\a \b \c])))
 

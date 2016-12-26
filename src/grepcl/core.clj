@@ -1,6 +1,5 @@
 ;; TODO: tools.cli/cli is might soon be deprecated; replace with tools.cli/parse-opts when possible
 ;; TODO: fix cli HELP
-;; TODO: fix visual output
 
 (ns grepcl.core
   (:gen-class)
@@ -31,8 +30,7 @@
   [k]
   (cond
     (nil? (first k)) []
-    ;; zero-plus and one-plus for sets temporarily suspended as features until composition
-    ;; of automata is found to be possible
+    ;; zero-plus and one-plus for sets temporarily suspended as features until composition of automata is found to be possible
     ;; zero-plus (for sets)
     ;;(and (vector? (first k))
     ;;     (= (second k) \*)) (cons
